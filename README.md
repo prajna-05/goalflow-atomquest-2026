@@ -4,25 +4,18 @@
 
 ---
 
-## ⚡ Quick Start (2 terminals)
+## 🔗 Live Links
+- **Frontend (Live):** https://goalflow-atomquest-2026.vercel.app
+- **Backend API:** https://goalflow-backend-oqio.onrender.com
+- **Swagger Docs:** https://goalflow-backend-oqio.onrender.com/docs
+- **GitHub:** https://github.com/prajna-05/goalflow-atomquest-2026
 
-### Terminal 1 — Backend
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn main:app --reload --port 8000
-```
-- API: http://localhost:8000
-- Swagger docs: http://localhost:8000/docs
-- DB auto-created and seeded on first run
+---
 
-### Terminal 2 — Frontend
-```bash
-cd frontend
-npm install
-npm start
-```
-- App: http://localhost:3000
+## ⚠️ Important Note
+Backend is on Render free tier — first load takes 60 seconds to wake up.
+Open this first: https://goalflow-backend-oqio.onrender.com/api/health
+Wait for {"status":"running"} — then open the frontend.
 
 ---
 
@@ -32,6 +25,8 @@ npm start
 | Employee | employee@atomberg.com         | password123  |
 | Manager  | manager@atomberg.com          | password123  |
 | Admin    | admin@atomberg.com            | password123  |
+
+
 
 ---
 
