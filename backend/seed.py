@@ -7,11 +7,11 @@ import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from models.models import init_db, Session, User, GoalSheet, Goal, CheckIn, AuditLog
-from passlib.context import CryptContext
+import hashlib
 from datetime import datetime
 import uuid
 
-pwd = CryptContext(schemes=["bcrypt"], deprecated="auto")
+def pwd_hash(p): return hashlib.sha256(p.encode()).hexdigest()
 
 USERS = [
     {"id":"u1","name":"Prajna J",     "email":"employee@atomberg.com", "password":"password123","role":"employee","department":"Engineering","manager_id":"u2","avatar":"PJ"},
@@ -34,7 +34,7 @@ def seed():
 
     # Users
     for u in USERS:
-       db.add(User(**{**u, "password": pwd.hash(u["password"])}))
+       db.add(User(**{**u, "password": pwd_hash(u["password"])}))
     db.flush()
 
     # Sample approved goal sheet for Vikram (u4)
