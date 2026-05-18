@@ -5,17 +5,15 @@
 ---
 
 ## 🔗 Live Links
-- **Frontend (Live):** https://goalflow-atomquest-2026.vercel.app
-- **Backend API:** https://goalflow-backend-oqio.onrender.com
-- **Swagger Docs:** https://goalflow-backend-oqio.onrender.com/docs
-- **GitHub:** https://github.com/prajna-05/goalflow-atomquest-2026
+| | URL |
+|---|---|
+| **🌐 Live App** | https://goalflow-backend-oqio.onrender.com |
+| **📖 API Docs** | https://goalflow-backend-oqio.onrender.com/api/docs |
+| **❤️ Health**  | https://goalflow-backend-oqio.onrender.com/api/health |
+| **📁 GitHub**  | https://github.com/prajna-05/goalflow-atomquest-2026 |
 
----
-
-## ⚠️ Important Note
-Backend is on Render free tier — first load takes 60 seconds to wake up.
-Open this first: https://goalflow-backend-oqio.onrender.com/api/health
-Wait for {"status":"running"} — then open the frontend.
+> ⚠️ **Note:** Render free tier sleeps after inactivity.
+> First load may take **60 seconds**. Please wait — it will load.
 
 ---
 
@@ -26,58 +24,65 @@ Wait for {"status":"running"} — then open the frontend.
 | Manager  | manager@atomberg.com          | password123  |
 | Admin    | admin@atomberg.com            | password123  |
 
-
-
----
-
-## ✅ Problem Statement Coverage
-| Requirement                            | Status     |
-|----------------------------------------|------------|
-| Goal creation (max 8, 100% weightage)  | ✅ Done    |
-| 4 UoM types with auto score formulas   | ✅ Done    |
-| Manager approve / return for rework    | ✅ Done    |
-| Goals locked after approval            | ✅ Done    |
-| Admin unlock with reason               | ✅ Done    |
-| Shared goals push to multiple employees| ✅ Done    |
-| Quarterly check-ins Q1–Q4              | ✅ Done    |
-| Manager check-in comments              | ✅ Done    |
-| Excel export (Planned vs Actual)       | ✅ Done    |
-| Full audit trail                       | ✅ Done    |
-| Escalation engine                      | ✅ Bonus   |
-| Analytics dashboard                    | ✅ Bonus   |
-| ML risk prediction (RandomForest)      | ✅ Bonus   |
-| ML anomaly detection (IsolationForest) | ✅ Bonus   |
-
 ---
 
 ## 🏗️ Architecture
 ```
-backend/
-├── main.py           ← FastAPI app + auto DB seed on startup
-├── seed.py           ← Demo data for SQLite
-├── requirements.txt
-├── models/
-│   └── models.py     ← SQLAlchemy ORM (User, GoalSheet, Goal, CheckIn, etc.)
-├── routes/
-│   ├── auth.py       ← JWT login/me
-│   ├── goals.py      ← Full goal lifecycle
-│   └── admin.py      ← Analytics, ML, export, escalations
-├── utils/
-│   └── scoring.py    ← 4 score formulas
-└── ml/
-    ├── predictor.py  ← RandomForest + IsolationForest + caching
-    └── saved_models/ ← joblib .pkl files (auto-created)
+Single Render URL
+       ↓
+FastAPI (Python)
+├── /api/auth    → JWT login
+├── /api/goals   → Goal lifecycle
+├── /api/admin   → Analytics, ML, Export
+└── /            → Serves React build (static files)
 
-frontend/
-└── src/
-    ├── pages/        ← 9 pages (Login, Employee, Manager, Admin, etc.)
-    ├── components/   ← Layout/sidebar
-    ├── context/      ← AuthContext (JWT state)
-    └── utils/        ← api.js (axios) + scoring.js
+SQLite (goalflow.db) ← SQLAlchemy ORM
+ML (scikit-learn)    ← joblib saved models
 ```
 
-## 💰 Cost Optimisation
-- **SQLite**: zero DB hosting cost, built into Python
-- **joblib**: ML model saved to disk, no retraining on restart
-- **10-min cache**: ML results cached, not recomputed per request
-- **Free hosting**: Vercel (frontend) + Render (backend) = $0
+---
+
+## ⚡ Local Development
+
+### Terminal 1 — Backend
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+```
+
+### Terminal 2 — Frontend
+```bash
+cd frontend
+npm install
+npm start
+```
+
+Frontend: http://localhost:3000
+Backend:  http://localhost:8000
+
+---
+
+## ✅ Features
+| Feature | Status |
+|---|---|
+| Goal creation (max 8, 100% weightage) | ✅ |
+| 4 UoM types with auto score formulas | ✅ |
+| Manager approve / return for rework | ✅ |
+| Goals locked after approval | ✅ |
+| Shared goals push to multiple employees | ✅ |
+| Quarterly check-ins Q1–Q4 | ✅ |
+| Excel export (Planned vs Actual) | ✅ |
+| Full audit trail in SQLite | ✅ |
+| Escalation engine | ✅ Bonus |
+| Analytics dashboard | ✅ Bonus |
+| ML Risk Prediction (RandomForest) | ✅ Bonus |
+| ML Anomaly Detection (IsolationForest) | ✅ Bonus |
+
+---
+
+## 💰 Cost — $0 Total
+- SQLite — no DB hosting needed
+- Render free tier — backend + frontend together
+- joblib — ML model saved, no retraining cost
+- No paid APIs used
