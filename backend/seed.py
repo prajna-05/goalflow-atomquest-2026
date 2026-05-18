@@ -28,9 +28,10 @@ def seed():
 
     # Skip if already seeded
     if db.query(User).first():
-        print("✅ DB already seeded — skipping")
-        db.close()
-        return
+        # Clear old data and reseed with correct password hashes
+        db.query(User).delete()
+        db.commit()
+        print("Reseeding with updated password hashes...")
 
     # Users
     for u in USERS:
