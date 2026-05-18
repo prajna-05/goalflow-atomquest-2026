@@ -16,15 +16,27 @@ app.include_router(admin.router, prefix="/api/admin", tags=["Admin & ML"])
 @app.on_event("startup")
 def startup():
     init_db()
-    # Clear ALL tables and reseed fresh
     from models.models import Session, Base, engine
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
-    print("🔄 Database wiped — reseeding fresh...")
-    
-    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-    from seed import seed
-    seed()
+    from models.models import User as UserModel
+    db = Session()
+    try:
+        user_count = db.query(UserModel).count()
+        if user_count == 0:
+            # Only wipe and reseed if empty
+            Base.metadata.drop_all(bind=engine)
+            Base.metadata.create_all(bind=engine)
+            print("🔄 Fresh database — seeding...")
+            db.close()
+            sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+            from seed import seed
+            seed()
+        else:
+            print("✅ DB already has data — skipping reseed")
+            db.close()
+    except:
+        db.close()
+        from seed import seed
+        seed()
     print("🚀 GoalFlow API ready at http://localhost:8000")
     print("📖 Swagger docs at http://localhost:8000/docs")
 
