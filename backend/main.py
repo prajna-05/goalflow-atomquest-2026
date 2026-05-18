@@ -16,13 +16,25 @@ app.include_router(admin.router, prefix="/api/admin", tags=["Admin & ML"])
 @app.on_event("startup")
 def startup():
     init_db()
-    # Auto-seed if DB is empty
+    # Force clear and reseed every time (fixes password hash mismatch)
+    from models.models import Session
+    from models.models import User as UserModel
+    db = Session()
+    try:
+        db.query(UserModel).delete()
+        db.commit()
+        print("🔄 Cleared users — reseeding...")
+    except:
+        db.rollback()
+    finally:
+        db.close()
+    
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     from seed import seed
     seed()
     print("🚀 GoalFlow API ready at http://localhost:8000")
     print("📖 Swagger docs at http://localhost:8000/docs")
-
+    
 @app.get("/api/health")
 def health():
     return {"status": "running", "version": "2.0.0", "db": "SQLite"}
