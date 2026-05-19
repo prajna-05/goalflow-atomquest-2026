@@ -31,26 +31,15 @@ def startup():
     init_db()
     from models.models import Session, Base, engine
     from models.models import User as UserModel
-    db = Session()
-    try:
-        user_count = db.query(UserModel).count()
-        if user_count == 0:
-            Base.metadata.drop_all(bind=engine)
-            Base.metadata.create_all(bind=engine)
-            print("🔄 Fresh database — seeding...")
-            db.close()
-            sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-            from seed import seed
-            seed()
-        else:
-            print("✅ DB already has data — skipping reseed")
-            db.close()
-    except Exception as e:
-        print(f"⚠️ Startup error: {e}")
-        db.close()
-        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-        from seed import seed
-        seed()
+
+    # Always wipe and reseed to fix password hash issues
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+    print("🔄 Database wiped — reseeding fresh...")
+
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from seed import seed
+    seed()
     print("🚀 GoalFlow ready!")
 
 # ── Serve React static files ───────────────────────────────────────────────
